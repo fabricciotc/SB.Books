@@ -1,0 +1,45 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="max-w-4xl mx-auto text-center py-16">
+    <div class="flex justify-center mb-6">
+        <svg class="w-20 h-20 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+    </div>
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Oops! Algo salió mal</h1>
+    <h2 class="text-xl text-gray-600 mb-8">Ocurrió un error al procesar tu solicitud.</h2>
+
+    @if (Model.ShowRequestId)
+    {
+        <div class="bg-gray-50 rounded-lg p-4 mb-6 inline-block">
+            <p class="text-sm text-gray-600">
+                <strong>Request ID:</strong> 
+                <code class="text-sm font-mono text-gray-900">@Model.RequestId</code>
+            </p>
+        </div>
+    }
+
+    @if (ViewContext.HttpContext.RequestServices.GetService(typeof(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)) is Microsoft.AspNetCore.Hosting.IWebHostEnvironment env && env.IsDevelopment())
+    {
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-6 text-left max-w-2xl mx-auto">
+            <h3 class="text-lg font-semibold text-yellow-900 mb-2">Modo de Desarrollo</h3>
+            <p class="text-sm text-yellow-800 mb-2">
+                Al cambiar al entorno <strong>Development</strong> se mostrará información más detallada sobre el error ocurrido.
+            </p>
+            <p class="text-sm text-yellow-800">
+                <strong>El entorno de desarrollo no debe estar habilitado para aplicaciones desplegadas.</strong>
+                Puede resultar en la visualización de información sensible de excepciones a los usuarios finales.
+            </p>
+        </div>
+    }
+
+    <div class="mt-8">
+        <a asp-controller="Home" asp-action="Index" 
+           class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-supabase-green hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-supabase-green transition-colors">
+            Volver al inicio
+        </a>
+    </div>
+</div>
