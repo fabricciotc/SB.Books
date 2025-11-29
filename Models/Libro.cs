@@ -38,13 +38,9 @@ public class Libro : BaseModel
     [Column("editorial")]
     public string? Editorial { get; set; }
 
-    [Display(Name = "URL de Imagen")]
-    [Column("imagen_url")]
-    public string? ImagenUrl { get; set; }
-
     [Column("fecha_creacion")]
     public DateTime? FechaCreacion { get; set; }
-    
+
     [Column("usuario_id")]
     public string? UsuarioId { get; set; }
 
@@ -52,22 +48,22 @@ public class Libro : BaseModel
     {
         if (string.IsNullOrWhiteSpace(Titulo))
             throw new ArgumentException("El título es obligatorio", nameof(Titulo));
-        
+
         if (Titulo.Length > 255)
             throw new ArgumentException("El título no puede exceder 255 caracteres", nameof(Titulo));
-        
+
         if (string.IsNullOrWhiteSpace(Autor))
             throw new ArgumentException("El autor es obligatorio", nameof(Autor));
-        
+
         if (Autor.Length > 255)
             throw new ArgumentException("El autor no puede exceder 255 caracteres", nameof(Autor));
-        
+
         if (!string.IsNullOrWhiteSpace(Isbn) && Isbn.Length > 13)
             throw new ArgumentException("El ISBN no puede exceder 13 caracteres", nameof(Isbn));
-        
+
         if (AnioPublicacion.HasValue && (AnioPublicacion < 1000 || AnioPublicacion > 9999))
             throw new ArgumentException("El año de publicación debe estar entre 1000 y 9999", nameof(AnioPublicacion));
-        
+
         if (!string.IsNullOrWhiteSpace(Editorial) && Editorial.Length > 255)
             throw new ArgumentException("La editorial no puede exceder 255 caracteres", nameof(Editorial));
     }

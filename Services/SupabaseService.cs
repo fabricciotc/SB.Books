@@ -238,7 +238,6 @@ public class SupabaseService : ISupabaseService
                 .Set(x => x.Isbn, libro.Isbn)
                 .Set(x => x.AnioPublicacion, libro.AnioPublicacion)
                 .Set(x => x.Editorial, libro.Editorial)
-                .Set(x => x.ImagenUrl, libro.ImagenUrl)
                 .Update();
 
             return response?.Models?.Count > 0;
@@ -269,90 +268,6 @@ public class SupabaseService : ISupabaseService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al eliminar libro con Id: {Id}", id);
-            return false;
-        }
-    }
-
-    public async Task<string?> SubirImagenAsync(Stream fileStream, string fileName, string contentType)
-    {
-        try
-        {
-            await AsegurarSesionSupabase();
-            var userId = await ObtenerUsuarioIdAsync();
-            if (string.IsNullOrEmpty(userId))
-                return null;
-
-            var fileExtension = Path.GetExtension(fileName)?.ToLowerInvariant();
-            if (string.IsNullOrEmpty(fileExtension))
-                return null;
-
-            var uniqueFileName = $"{userId}/{Guid.NewGuid()}{fileExtension}";
-
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-            if (!allowedExtensions.Contains(fileExtension))
-                return null;
-
-            if (fileStream.CanSeek && fileStream.Position > 0)
-            {
-                fileStream.Position = 0;
-            }
-
-            byte[] fileBytes;
-            using (var memoryStream = new MemoryStream())
-            {
-                await fileStream.CopyToAsync(memoryStream);
-                fileBytes = memoryStream.ToArray();
-            }
-
-            if (fileBytes.Length == 0)
-                return null;
-
-            const string bucketName = "libros-imagenes";
-            var bucket = _client.Storage.From(bucketName);
-
-            var result = await bucket.Upload(fileBytes, uniqueFileName, new Supabase.Storage.FileOptions
-            {
-                ContentType = contentType ?? "image/jpeg",
-                Upsert = false
-            });
-
-            if (result == null)
-                return null;
-
-            return bucket.GetPublicUrl(uniqueFileName);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error al subir imagen: {FileName}", fileName);
-            return null;
-        }
-    }
-
-    public async Task<bool> EliminarImagenAsync(string filePath)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(filePath))
-                return false;
-
-            await AsegurarSesionSupabase();
-
-            var uri = new Uri(filePath);
-            var pathParts = uri.AbsolutePath.Split('/');
-            var fileName = string.Join("/", pathParts.SkipWhile(p => p != "libros-imagenes").Skip(1));
-
-            if (string.IsNullOrEmpty(fileName))
-                return false;
-
-            const string bucketName = "libros-imagenes";
-            var bucket = _client.Storage.From(bucketName);
-
-            var result = await bucket.Remove(new List<string> { fileName });
-            return result != null;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error al eliminar imagen: {FilePath}", filePath);
             return false;
         }
     }

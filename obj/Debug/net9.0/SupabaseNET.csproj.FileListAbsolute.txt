@@ -114,3 +114,4 @@
 /Users/fabricciotornero/DataGripProjects/SupabaseNET/SupabaseNET/obj/Debug/net9.0/SupabaseNET.pdb
 /Users/fabricciotornero/DataGripProjects/SupabaseNET/SupabaseNET/obj/Debug/net9.0/SupabaseNET.genruntimeconfig.cache
 /Users/fabricciotornero/DataGripProjects/SupabaseNET/SupabaseNET/obj/Debug/net9.0/ref/SupabaseNET.dll
+/Users/fabricciotornero/DataGripProjects/SupabaseNET/SupabaseNET/obj/Debug/net9.0/SupabaseNET.sourcelink.json

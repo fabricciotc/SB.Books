@@ -46,7 +46,7 @@ public class LibrosController : Controller
     // POST: Libros/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Libro libro, IFormFile? imagen)
+    public async Task<IActionResult> Create(Libro libro)
     {
         try
         {
@@ -65,32 +65,8 @@ public class LibrosController : Controller
 
         try
         {
-            string? imageUrl = null;
-            if (imagen != null && imagen.Length > 0)
-            {
-                _logger.LogInformation("Subiendo imagen: {FileName}, Tamaño: {Size} bytes", 
-                    imagen.FileName, imagen.Length);
-                
-                using var stream = imagen.OpenReadStream();
-                imageUrl = await _supabaseService.SubirImagenAsync(
-                    stream,
-                    imagen.FileName,
-                    imagen.ContentType
-                );
-                
-                if (string.IsNullOrEmpty(imageUrl))
-                {
-                    _logger.LogWarning("No se pudo subir la imagen: {FileName}", imagen.FileName);
-                    ModelState.AddModelError("ImagenUrl", "Error al subir la imagen. Verifique el formato (JPG, PNG, GIF, WEBP) y que el archivo no esté vacío.");
-                    return View(libro);
-                }
-                
-                _logger.LogInformation("Imagen subida exitosamente. URL: {Url}", imageUrl);
-            }
-
-            libro.ImagenUrl = imageUrl;
             var success = await _supabaseService.CrearLibroAsync(libro);
-            
+
             if (success)
             {
                 TempData["SuccessMessage"] = "Libro creado exitosamente.";
@@ -124,7 +100,7 @@ public class LibrosController : Controller
     // POST: Libros/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Libro libro, IFormFile? imagen, bool? eliminarImagen)
+    public async Task<IActionResult> Edit(int id, Libro libro)
     {
         if (id != libro.Id)
             return NotFound();
@@ -146,51 +122,8 @@ public class LibrosController : Controller
 
         try
         {
-            var libroExistente = await _supabaseService.ObtenerLibroPorIdAsync(id);
-            if (libroExistente == null)
-                return NotFound();
-
-            if (eliminarImagen == true && !string.IsNullOrEmpty(libroExistente.ImagenUrl))
-            {
-                await _supabaseService.EliminarImagenAsync(libroExistente.ImagenUrl);
-                libro.ImagenUrl = null;
-            }
-
-            string? nuevaImagenUrl = null;
-            if (imagen != null && imagen.Length > 0)
-            {
-                _logger.LogInformation("Subiendo nueva imagen para edición: {FileName}, Tamaño: {Size} bytes", 
-                    imagen.FileName, imagen.Length);
-                
-                if (!string.IsNullOrEmpty(libroExistente.ImagenUrl))
-                {
-                    await _supabaseService.EliminarImagenAsync(libroExistente.ImagenUrl);
-                }
-
-                using var stream = imagen.OpenReadStream();
-                nuevaImagenUrl = await _supabaseService.SubirImagenAsync(
-                    stream,
-                    imagen.FileName,
-                    imagen.ContentType
-                );
-                
-                if (string.IsNullOrEmpty(nuevaImagenUrl))
-                {
-                    _logger.LogWarning("No se pudo subir la nueva imagen: {FileName}", imagen.FileName);
-                    ModelState.AddModelError("ImagenUrl", "Error al subir la imagen. Verifique el formato (JPG, PNG, GIF, WEBP) y que el archivo no esté vacío.");
-                    return View(libro);
-                }
-
-                _logger.LogInformation("Nueva imagen subida exitosamente. URL: {Url}", nuevaImagenUrl);
-                libro.ImagenUrl = nuevaImagenUrl;
-            }
-            else if (eliminarImagen != true)
-            {
-                libro.ImagenUrl = libroExistente.ImagenUrl;
-            }
-
             var success = await _supabaseService.ActualizarLibroAsync(libro);
-            
+
             if (success)
             {
                 TempData["SuccessMessage"] = "Libro actualizado exitosamente.";
@@ -228,12 +161,6 @@ public class LibrosController : Controller
     {
         try
         {
-            var libro = await _supabaseService.ObtenerLibroPorIdAsync(id);
-            if (libro != null && !string.IsNullOrEmpty(libro.ImagenUrl))
-            {
-                await _supabaseService.EliminarImagenAsync(libro.ImagenUrl);
-            }
-
             var success = await _supabaseService.EliminarLibroAsync(id);
             if (success)
             {

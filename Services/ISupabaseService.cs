@@ -9,15 +9,11 @@ public interface ISupabaseService
     Task<bool> CerrarSesionAsync();
     Task<string?> ObtenerUsuarioIdAsync();
     Task<bool> UsuarioAutenticadoAsync();
-    
+
     // CRUD de Libros
     Task<List<Libro>> ObtenerLibrosAsync();
     Task<Libro?> ObtenerLibroPorIdAsync(int id);
     Task<bool> CrearLibroAsync(Libro libro);
     Task<bool> ActualizarLibroAsync(Libro libro);
     Task<bool> EliminarLibroAsync(int id);
-    
-    // Gestión de archivos
-    Task<string?> SubirImagenAsync(Stream fileStream, string fileName, string contentType);
-    Task<bool> EliminarImagenAsync(string filePath);
 }

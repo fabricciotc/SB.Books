@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SupabaseNET")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8330cd79eeede0c6e46c64c139c519f12c910290")]
 [assembly: System.Reflection.AssemblyProductAttribute("SupabaseNET")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SupabaseNET")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
