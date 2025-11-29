@@ -2,13 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copiar archivos de proyecto
-COPY ["SupabaseNET/SupabaseNET.csproj", "SupabaseNET/"]
-RUN dotnet restore "SupabaseNET/SupabaseNET.csproj"
+# Copiar archivos de proyecto y restaurar dependencias
+COPY ["SupabaseNET.csproj", "./"]
+RUN dotnet restore "SupabaseNET.csproj"
 
 # Copiar todo el código y compilar
 COPY . .
-WORKDIR "/src/SupabaseNET"
+WORKDIR "/src"
 RUN dotnet build "SupabaseNET.csproj" -c Release -o /app/build
 
 # Stage 2: Publish
